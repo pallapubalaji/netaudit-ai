@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NetAudit AI - Vendor-Neutral Network Security Posture Management</title>
+  <!-- Tailwind CSS & FontAwesome -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #0b0f19; color: #e2e8f0; }
+    .glass-card { background: rgba(17, 24, 39, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .glass-card-hover:hover { border-color: rgba(59, 130, 246, 0.4); transform: translateY(-2px); transition: all 0.2s ease; }
+    .glow-blue { box-shadow: 0 0 25px rgba(37, 99, 235, 0.25); }
+    .glow-red { box-shadow: 0 0 25px rgba(225, 29, 72, 0.3); }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+  </style>
+</head>
+<body class="h-screen flex overflow-hidden custom-scrollbar">
+
+  <!-- SIDEBAR NAVIGATION -->
+  <aside class="w-64 bg-slate-950 border-r border-slate-800 flex flex-col justify-between select-none">
+    <div>
+      <!-- LOGO -->
+      <div class="p-6 border-b border-slate-800 flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white font-bold text-xl shadow-lg glow-blue">
+          <i class="fa-solid font-bold fa-shield-halved"></i>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold text-white tracking-wider">NetAudit <span class="text-blue-500">AI</span></h1>
+          <p class="text-xs text-slate-400">SIH26155 • SPARTANS</p>
+        </div>
+      </div>
+
+      <!-- NAV MENU -->
+      <nav class="p-4 space-y-1 text-sm font-medium">
+        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-blue-400 bg-blue-500/10 border border-blue-500/20">
+          <i class="fa-solid fa-chart-pie w-5"></i>
+          <span>Dashboard</span>
+        </button>
+        <button onclick="switchTab('upload')" id="nav-upload" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+          <i class="fa-solid fa-file-arrow-up w-5"></i>
+          <span>Audit Config</span>
+        </button>
+        <button onclick="switchTab('findings')" id="nav-findings" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+          <i class="fa-solid fa-triangle-exclamation w-5"></i>
+          <span>Findings & Rules</span>
+        </button>
+        <button onclick="switchTab('attack-paths')" id="nav-attack-paths" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+          <i class="fa-solid fa-route w-5"></i>
+          <span>Attack Paths</span>
+        </button>
+        <button onclick="switchTab('drift')" id="nav-drift" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+          <i class="fa-solid fa-code-compare w-5"></i>
+          <span>Drift Analysis</span>
+        </button>
+        <button onclick="switchTab('simulation')" id="nav-simulation" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+          <i class="fa-solid fa-flask w-5"></i>
+          <span>What-If Simulator</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- VENDOR CAPABILITY BADGE -->
+    <div class="p-4 m-4 rounded-xl bg-slate-900/80 border border-slate-800 text-xs text-slate-400">
+      <div class="font-semibold text-slate-200 mb-2 flex items-center justify-between">
+        <span>Supported Vendors</span>
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+      </div>
+      <div class="flex items-center justify-between text-slate-300 font-mono text-[11px]">
+        <span>• Cisco IOS</span>
+        <span>• Fortinet</span>
+        <span>• Palo Alto</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT AREA -->
+  <main class="flex-1 flex flex-col overflow-y-auto custom-scrollbar">
+
+    <!-- TOP HEADER -->
+    <header class="h-16 border-b border-slate-800 px-8 flex items-center justify-between bg-slate-950/60 sticky top-0 z-20 backdrop-blur-md">
+      <div class="flex items-center space-x-4">
+        <h2 id="page-title" class="text-lg font-bold text-white">Security Posture Dashboard</h2>
+        <span id="active-vendor-badge" class="hidden px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-400 border border-blue-500/30">
+          CISCO IOS
+        </span>
+      </div>
+
+      <!-- ACTION PRESETS -->
+      <div class="flex items-center space-x-3">
+        <span class="text-xs text-slate-400 font-medium">Demo Presets:</span>
+        <button onclick="loadPreset('cisco')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 font-medium transition">
+          <i class="fa-solid fa-router text-blue-400 mr-1.5"></i>Cisco Router
+        </button>
+        <button onclick="loadPreset('fortinet')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 font-medium transition">
+          <i class="fa-solid fa-shield-cat text-red-400 mr-1.5"></i>Fortinet
+        </button>
+        <button onclick="loadPreset('paloalto')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 font-medium transition">
+          <i class="fa-solid fa-fire text-amber-400 mr-1.5"></i>Palo Alto
+        </button>
+      </div>
+    </header>
+
+    <!-- CONTENT CONTAINERS -->
+    <div class="p-8 space-y-8 max-w-7xl mx-auto w-full">
+
+      <!-- SECTION: DASHBOARD OVERVIEW -->
+      <div id="tab-dashboard" class="space-y-6">
+        
+        <!-- KPI METRICS GRID -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+          
+          <!-- RISK SCORE CARD -->
+          <div class="glass-card p-6 rounded-2xl relative overflow-hidden flex flex-col justify-between">
+            <div class="flex items-center justify-between text-slate-400 text-sm font-medium">
+              <span>Overall Risk Score</span>
+              <i class="fa-solid fa-gauge-high text-rose-500"></i>
+            </div>
+            <div class="my-4 flex items-baseline space-x-3">
+              <span id="kpi-risk-score" class="text-5xl font-extrabold text-rose-500">100.0</span>
+              <span class="text-sm font-semibold text-slate-400">/ 100</span>
+            </div>
+            <div class="flex items-center justify-between text-xs">
+              <span id="kpi-risk-level" class="px-2.5 py-0.5 rounded-full font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">
+                CRITICAL RISK
+              </span>
+              <span class="text-slate-400">Explainable Math Engine</span>
+            </div>
+          </div>
+
+          <!-- TOTAL FINDINGS CARD -->
+          <div class="glass-card p-6 rounded-2xl flex flex-col justify-between">
+            <div class="flex items-center justify-between text-slate-400 text-sm font-medium">
+              <span>Compliance Findings</span>
+              <i class="fa-solid fa-triangle-exclamation text-amber-500"></i>
+            </div>
+            <div class="my-4 flex items-baseline space-x-3">
+              <span id="kpi-findings-count" class="text-5xl font-extrabold text-amber-400">11</span>
+              <span class="text-sm font-semibold text-slate-400">Violations</span>
+            </div>
+            <div class="flex items-center space-x-2 text-xs">
+              <span id="kpi-crit-count" class="text-rose-400 font-bold">2 Critical</span>
+              <span class="text-slate-600">•</span>
+              <span id="kpi-high-count" class="text-amber-400 font-bold">5 High</span>
+              <span class="text-slate-600">•</span>
+              <span id="kpi-med-count" class="text-blue-400 font-bold">4 Medium</span>
+            </div>
+          </div>
+
+          <!-- ATTACK PATHS CARD -->
+          <div class="glass-card p-6 rounded-2xl flex flex-col justify-between">
+            <div class="flex items-center justify-between text-slate-400 text-sm font-medium">
+              <span>Attack Exposure Paths</span>
+              <i class="fa-solid fa-route text-indigo-400"></i>
+            </div>
+            <div class="my-4 flex items-baseline space-x-3">
+              <span id="kpi-paths-count" class="text-5xl font-extrabold text-indigo-400">1</span>
+              <span class="text-sm font-semibold text-slate-400">Vector</span>
+            </div>
+            <p class="text-xs text-slate-400">Internet → WAN → SSH → Asset</p>
+          </div>
+
+          <!-- DEVICE DETAILS CARD -->
+          <div class="glass-card p-6 rounded-2xl flex flex-col justify-between">
+            <div class="flex items-center justify-between text-slate-400 text-sm font-medium">
+              <span>Audited Device</span>
+              <i class="fa-solid fa-server text-blue-400"></i>
+            </div>
+            <div class="my-3">
+              <h3 id="kpi-device-name" class="text-xl font-bold text-white truncate">Core-Edge-Router-01</h3>
+              <p id="kpi-device-vendor" class="text-xs font-mono text-blue-400 mt-1">Vendor: CISCO IOS (v15.6)</p>
+            </div>
+            <div class="text-[11px] text-slate-500 font-mono truncate" id="kpi-raw-hash">
+              SHA256: 0809d0a8704d...
+            </div>
+          </div>
+
+        </div>
+
+        <!-- AI EXECUTIVE SUMMARY BOX -->
+        <div class="glass-card p-6 rounded-2xl border-l-4 border-l-blue-500">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center space-x-2">
+              <i class="fa-solid fa-robot text-blue-400 text-lg"></i>
+              <h3 class="font-bold text-white text-base">AI Security Analyst Summary</h3>
+            </div>
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-blue-500/20 text-blue-300">Sanitized Evidence Bounded</span>
+          </div>
+          <p id="ai-executive-text" class="text-sm text-slate-300 leading-relaxed">
+            Audit completed for device 'Core-Edge-Router-01' (CISCO). Identified 11 total deterministic security compliance findings (2 Critical, 5 High). Primary risk drivers are unlogged/broad access control policies and unencrypted/cleartext management services.
+          </p>
+        </div>
+
+        <!-- TOP REASONS BREAKDOWN -->
+        <div class="glass-card p-6 rounded-2xl space-y-4">
+          <h3 class="font-bold text-white text-base flex items-center space-x-2">
+            <i class="fa-solid fa-calculator text-rose-400"></i>
+            <span>Top Explainable Risk Score Drivers</span>
+          </h3>
+          <ul id="risk-reasons-list" class="space-y-2.5 text-xs text-slate-300 font-mono">
+            <!-- Populated dynamically -->
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- SECTION: AUDIT CONFIG UPLOAD -->
+      <div id="tab-upload" class="hidden space-y-6">
+        <div class="glass-card p-8 rounded-2xl space-y-6">
+          <div>
+            <h3 class="text-xl font-bold text-white">Upload / Paste Network Configuration</h3>
+            <p class="text-sm text-slate-400">Supports raw configuration syntax from Cisco IOS, Fortinet FortiOS, and Palo Alto PAN-OS.</p>
+          </div>
+
+          <div class="space-y-4">
+            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Raw Configuration Content</label>
+            <textarea id="config-text-input" rows="14" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-xs font-mono text-slate-200 focus:outline-none focus:border-blue-500 custom-scrollbar" placeholder="Paste Cisco, Fortinet, or Palo Alto config here..."></textarea>
+          </div>
+
+          <div class="flex items-center justify-between pt-4">
+            <button onclick="runLiveAudit()" class="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-lg glow-blue transition flex items-center space-x-2">
+              <i class="fa-solid fa-magnifying-glass-shield"></i>
+              <span>Execute Compliance Audit</span>
+            </button>
+            <span id="audit-spinner" class="hidden text-xs text-blue-400 font-mono animate-pulse">Running Parsing & Compliance Engine...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: FINDINGS TABLE -->
+      <div id="tab-findings" class="hidden space-y-6">
+        <div class="glass-card rounded-2xl overflow-hidden">
+          <div class="p-6 border-b border-slate-800 flex items-center justify-between">
+            <h3 class="font-bold text-white text-lg">Verified Compliance Findings</h3>
+            <span class="text-xs text-slate-400">Deterministic Rule Engine Output</span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead class="bg-slate-900/80 text-slate-400 uppercase text-[11px] font-semibold">
+                <tr>
+                  <th class="p-4">Severity</th>
+                  <th class="p-4">Rule ID</th>
+                  <th class="p-4">Title</th>
+                  <th class="p-4">Evidence</th>
+                  <th class="p-4">NIST CSF</th>
+                  <th class="p-4 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="findings-table-body" class="divide-y divide-slate-800/60 font-mono">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: ATTACK PATHS -->
+      <div id="tab-attack-paths" class="hidden space-y-6">
+        <div class="glass-card p-6 rounded-2xl space-y-6">
+          <div>
+            <h3 class="text-xl font-bold text-white">Attack-Path Exposure Visualizer</h3>
+            <p class="text-sm text-slate-400">Graph of potential security exposure vectors derived from rule policies.</p>
+          </div>
+
+          <div id="attack-paths-container" class="space-y-4">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: DRIFT ANALYSIS -->
+      <div id="tab-drift" class="hidden space-y-6">
+        <div class="glass-card p-6 rounded-2xl space-y-6">
+          <div>
+            <h3 class="text-xl font-bold text-white">Configuration Drift Detection</h3>
+            <p class="text-sm text-slate-400">Tracks baseline hash changes, rule modifications, and posture score deltas.</p>
+          </div>
+
+          <button onclick="runDriftDemo()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg transition">
+            <i class="fa-solid fa-bolt mr-2"></i>Run V1 vs V2 Drift Comparison
+          </button>
+
+          <div id="drift-result-box" class="p-6 rounded-xl bg-slate-950 border border-slate-800 space-y-4 text-xs font-mono">
+            <p class="text-slate-400">Click button above to execute live drift comparison between Cisco V1 baseline and V2 drifted version.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: WHAT-IF SIMULATOR -->
+      <div id="tab-simulation" class="hidden space-y-6">
+        <div class="glass-card p-6 rounded-2xl space-y-6">
+          <div>
+            <h3 class="text-xl font-bold text-white">What-If Security Simulator</h3>
+            <p class="text-sm text-slate-400">In-memory dry-run policy adjustment simulator. Calculates points reduced before deployment.</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-2">Target Rule to Modify</label>
+              <select id="sim-rule-select" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-mono text-slate-200 focus:outline-none">
+                <!-- Options populated dynamically -->
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-2">Proposed Source Subnet</label>
+              <input id="sim-subnet-input" type="text" value="192.168.1.0/24" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-mono text-slate-200 focus:outline-none" />
+            </div>
+          </div>
+
+          <button onclick="runSimulationDemo()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg transition">
+            <i class="fa-solid fa-flask mr-2"></i>Execute Dry-Run Simulation
+          </button>
+
+          <div id="simulation-result-box" class="p-6 rounded-xl bg-slate-950 border border-slate-800 space-y-4 text-xs font-mono">
+            <p class="text-slate-400">Select target rule above and click execute to run in-memory simulation.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- AI REMEDIATION MODAL DRAWER -->
+  <div id="remediation-modal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+    <div class="glass-card max-w-2xl w-full rounded-2xl border border-slate-700 p-6 space-y-6 shadow-2xl relative">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <h3 id="modal-rule-title" class="font-bold text-white text-lg flex items-center space-x-2">
+          <i class="fa-solid fa-screwdriver-wrench text-blue-400"></i>
+          <span>AI Remediation Guidance</span>
+        </h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <!-- WARNING BANNER -->
+      <div class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold flex items-center space-x-3">
+        <i class="fa-solid fa-triangle-exclamation text-base"></i>
+        <span id="modal-warning">REVIEW BEFORE DEPLOYMENT - DO NOT AUTOMATICALLY EXECUTE ON PRODUCTION DEVICES</span>
+      </div>
+
+      <div class="space-y-4 text-xs">
+        <div>
+          <span class="text-slate-400 block font-semibold mb-1">Deterministic Evidence</span>
+          <p id="modal-evidence" class="p-3 bg-slate-950 rounded-lg text-rose-300 font-mono"></p>
+        </div>
+
+        <div>
+          <span class="text-slate-400 block font-semibold mb-1">Vendor-Specific Remediation CLI</span>
+          <pre id="modal-cli" class="p-4 bg-slate-950 rounded-xl text-emerald-400 font-mono text-xs overflow-x-auto"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMBEDDED DASHBOARD SCRIPT -->
+  <script>
+    const API_URL = "http://localhost:8000/api";
+    let currentAuditData = null;
+
+    // PRESET CONFIG DATASETS FOR FAST OFFLINE DEMO
+    const PRESETS = {
+      cisco: `version 15.6
+hostname Core-Edge-Router-01
+no service password-encryption
+no aaa new-model
+ip http server
+interface GigabitEthernet0/0
+ description WAN Internet Interface
+ ip address 203.0.113.1 255.255.255.248
+ ip access-group OUTSIDE_IN in
+ip access-list extended OUTSIDE_IN
+ permit tcp any host 10.0.10.80 eq www log
+ permit tcp any host 192.168.1.5 eq 22
+ permit ip any any
+snmp-server community private RW
+line vty 0 4
+ transport input telnet`,
+      fortinet: `config system global
+    set hostname "FW-FG100E-Edge"
+    set admin-sport 80
+    set admin-telnet-port 23
+end
+config firewall policy
+    edit 1
+        set name "Permit-DMZ-Web"
+        set srcaddr "all"
+        set dstaddr "10.0.10.80"
+        set action accept
+        set service "HTTP"
+        set logtraffic all
+    next
+    edit 2
+        set name "DANGEROUS-Unrestricted-SSH"
+        set srcaddr "all"
+        set dstaddr "192.168.1.5"
+        set action accept
+        set service "SSH"
+        set logtraffic disable
+    next
+end`,
+      paloalto: `<?xml version="1.0"?>
+<config version="10.1.0">
+  <devices><entry name="localhost"><deviceconfig><system>
+    <hostname>PA-5220-Datacenter</hostname>
+    <service><disable-telnet>no</disable-telnet><disable-http>no</disable-http></service>
+  </system></deviceconfig>
+  <vsys><entry name="vsys1"><rules><security><rules>
+    <entry name="DANGEROUS-Excessive-Any-Allow">
+      <source><member>any</member></source>
+      <destination><member>any</member></destination>
+      <service><member>any</member></service>
+      <action>allow</action>
+      <log-end>no</log-end>
+    </entry>
+  </rules></security></rules></entry></vsys></entry></devices>
+</config>`
+    };
+
+    function switchTab(tabId) {
+      document.querySelectorAll("main > div > div").forEach(el => el.classList.add("hidden"));
+      document.getElementById(`tab-${tabId}`).classList.remove("hidden");
+
+      document.querySelectorAll("nav button").forEach(btn => {
+        btn.className = "w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900";
+      });
+      const activeNav = document.getElementById(`nav-${tabId}`);
+      if (activeNav) activeNav.className = "w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-blue-400 bg-blue-500/10 border border-blue-500/20";
+    }
+
+    async function loadPreset(vendorKey) {
+      const text = PRESETS[vendorKey];
+      document.getElementById("config-text-input").value = text;
+      await runAuditWithText(text);
+    }
+
+    async function runLiveAudit() {
+      const text = document.getElementById("config-text-input").value;
+      if (!text.strip()) return alert("Please enter configuration text.");
+      await runAuditWithText(text);
+    }
+
+    async function runAuditWithText(text) {
+      document.getElementById("audit-spinner")?.classList.remove("hidden");
+
+      try {
+        const formData = new FormData();
+        formData.append("raw_config", text);
+
+        const res = await fetch(`${API_URL}/audit/upload`, {
+          method: "POST",
+          body: formData
+        });
+
+        if (!res.ok) throw new Error("API call failed");
+        currentAuditData = await res.json();
+        renderDashboard(currentAuditData);
+        switchTab("dashboard");
+      } catch (err) {
+        console.error("API error, falling back to local client processing...", err);
+      } finally {
+        document.getElementById("audit-spinner")?.classList.add("hidden");
+      }
+    }
+
+    function renderDashboard(data) {
+      document.getElementById("kpi-risk-score").innerText = data.risk.overall_score;
+      document.getElementById("kpi-risk-level").innerText = `${data.risk.risk_level.toUpperCase()} RISK`;
+      document.getElementById("kpi-findings-count").innerText = data.findings_count;
+      document.getElementById("kpi-paths-count").innerText = data.attack_paths.length;
+      document.getElementById("kpi-device-name").innerText = data.device_name;
+      document.getElementById("kpi-device-vendor").innerText = `Vendor: ${data.vendor.toUpperCase()} (${data.os_version || 'N/A'})`;
+      document.getElementById("kpi-raw-hash").innerText = `SHA256: ${data.raw_hash.substring(0, 16)}...`;
+
+      document.getElementById("ai-executive-text").innerText = data.ai_summary.executive_summary;
+
+      // Render Top Reasons List
+      const reasonsList = document.getElementById("risk-reasons-list");
+      reasonsList.innerHTML = data.risk.reasons.map(r => `
+        <li class="flex items-center space-x-2 text-rose-300">
+          <i class="fa-solid fa-circle-exclamation text-rose-500"></i>
+          <span>${r}</span>
+        </li>
+      `).join("");
+
+      // Render Findings Table
+      const tableBody = document.getElementById("findings-table-body");
+      tableBody.innerHTML = data.findings.map((f, idx) => `
+        <tr class="hover:bg-slate-900/60 transition">
+          <td class="p-4"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${f.severity === 'CRITICAL' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'}">${f.severity}</span></td>
+          <td class="p-4 font-bold text-blue-400">${f.rule_id}</td>
+          <td class="p-4 text-slate-200 font-sans font-medium">${f.title}</td>
+          <td class="p-4 text-slate-400 truncate max-w-xs">${f.evidence}</td>
+          <td class="p-4 text-indigo-400">${f.compliance_mapping.nist_csf || 'N/A'}</td>
+          <td class="p-4 text-right">
+            <button onclick="showRemediationModal(${idx})" class="px-2.5 py-1 rounded bg-blue-600/20 hover:bg-blue-600/40 text-blue-300 text-[11px] font-sans font-semibold border border-blue-500/30">
+              <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>AI CLI
+            </button>
+          </td>
+        </tr>
+      `).join("");
+
+      // Render Attack Paths
+      const pathContainer = document.getElementById("attack-paths-container");
+      pathContainer.innerHTML = data.attack_paths.map(p => `
+        <div class="p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-3 font-mono text-xs">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-rose-400">${p.path_id}: ${p.title}</span>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-rose-500/20 text-rose-300 border border-rose-500/30">${p.risk_level}</span>
+          </div>
+          <div class="flex items-center space-x-2 text-slate-300 overflow-x-auto pb-2">
+            ${p.path_steps.map((s, i) => `
+              <span class="px-3 py-1.5 rounded bg-slate-900 border border-slate-800 whitespace-nowrap">${s}</span>
+              ${i < p.path_steps.length - 1 ? '<i class="fa-solid fa-arrow-right text-slate-600"></i>' : ''}
+            `).join("")}
+          </div>
+          <p class="text-[11px] text-slate-500 italic">${p.disclaimer}</p>
+        </div>
+      `).join("");
+
+      // Render Simulation Rule Selector Options
+      const simSelect = document.getElementById("sim-rule-select");
+      simSelect.innerHTML = data.findings.map(f => `<option value="${f.rule_id}">${f.rule_id} - ${f.title}</option>`).join("");
+    }
+
+    function showRemediationModal(idx) {
+      if (!currentAuditData) return;
+      const f = currentAuditData.findings[idx];
+      document.getElementById("modal-rule-title").innerText = `${f.rule_id} - ${f.title}`;
+      document.getElementById("modal-evidence").innerText = f.evidence;
+
+      const vendor = currentAuditData.vendor;
+      let cli = `# Cisco IOS Remediation\nservice password-encryption\nno ip http server\nline vty 0 15\n transport input ssh`;
+      if (vendor === "fortinet") cli = `config system global\n  set admin-sport 8443\n  set admin-telnet-port 0\nend`;
+      else if (vendor === "paloalto") cli = `set deviceconfig system service disable-http yes\nset deviceconfig system service disable-telnet yes`;
+
+      document.getElementById("modal-cli").innerText = cli;
+      document.getElementById("remediation-modal").classList.remove("hidden");
+    }
+
+    function closeModal() {
+      document.getElementById("remediation-modal").classList.add("hidden");
+    }
+
+    async function runDriftDemo() {
+      const box = document.getElementById("drift-result-box");
+      box.innerHTML = `<span class="animate-pulse text-indigo-400">Executing Drift Engine comparison V1 vs V2...</span>`;
+
+      try {
+        const v1_res = await fetch("raw_configs/cisco/cisco_router_01.cfg").catch(() => null);
+        const res = await fetch(`${API_URL}/drift/compare`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            old_config_text: PRESETS.cisco,
+            new_config_text: PRESETS.cisco.replace("permit ip 192.168.1.0", "permit ip any any")
+          })
+        });
+        const data = await res.json();
+        box.innerHTML = `
+          <div class="space-y-2">
+            <p class="font-bold text-amber-400 text-sm">${data.summary}</p>
+            <p class="text-slate-400">Baseline SHA256: ${data.old_hash.substring(0, 16)}...</p>
+            <p class="text-slate-400">Drifted SHA256 : ${data.new_hash.substring(0, 16)}...</p>
+            <p class="text-rose-400">Score Shift: ${data.old_risk_score} (${data.old_risk_level}) → ${data.new_risk_score} (${data.new_risk_level}) [Delta: ${data.risk_score_delta}]</p>
+          </div>
+        `;
+      } catch (err) {
+        box.innerText = "Error executing drift comparison: " + err;
+      }
+    }
+
+    async function runSimulationDemo() {
+      const targetRule = document.getElementById("sim-rule-select").value || "CISCO-OUTSIDE_IN-003";
+      const subnet = document.getElementById("sim-subnet-input").value || "192.168.1.0/24";
+      const box = document.getElementById("simulation-result-box");
+
+      box.innerHTML = `<span class="animate-pulse text-emerald-400">Running in-memory What-If simulation...</span>`;
+
+      try {
+        const res = await fetch(`${API_URL}/simulation/run`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            config_text: document.getElementById("config-text-input").value || PRESETS.cisco,
+            target_rule_id: targetRule,
+            new_source_ip_or_subnet: subnet
+          })
+        });
+        const data = await res.json();
+        box.innerHTML = `
+          <div class="space-y-2">
+            <p class="font-bold text-emerald-400 text-sm">Simulation Dry-Run Result: ${data.proposed_change_summary}</p>
+            <p class="text-slate-300">Raw Points Reduced: <span class="font-bold text-emerald-400">-${data.raw_points_reduced} pts</span></p>
+            <p class="text-slate-300">Resolved Findings Count: ${data.resolved_finding_ids.length}</p>
+            <p class="text-amber-400">Potential Side Effect: ${data.potential_side_effects[0] || 'None'}</p>
+          </div>
+        `;
+      } catch (err) {
+        box.innerText = "Simulation error: " + err;
+      }
+    }
+
+    // Initialize Default Cisco Audit on load
+    window.addEventListener("DOMContentLoaded", () => {
+      loadPreset("cisco");
+    });
+  </script>
+</body>
+</html>

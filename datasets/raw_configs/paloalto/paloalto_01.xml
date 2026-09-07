@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<!-- NetAudit AI Test Dataset - Palo Alto PAN-OS Configuration 01 -->
+<!-- Purpose: Benchmark Palo Alto configuration containing deterministic security misconfigurations -->
+<!-- Vendor: Palo Alto Networks PAN-OS -->
+<config version="10.1.0" urldb="paloaltonetworks">
+  <mgt-config>
+    <users>
+      <entry name="admin">
+        <phash>$1$mERr$lC99A...</phash>
+      </entry>
+    </users>
+  </mgt-config>
+  <devices>
+    <entry name="localhost.localdomain">
+      <deviceconfig>
+        <system>
+          <hostname>PA-5220-Datacenter</hostname>
+          <domain>corporate.local</domain>
+          <service>
+            <disable-telnet>no</disable-telnet>
+            <disable-http>no</disable-http>
+          </service>
+        </system>
+      </deviceconfig>
+      <vsys>
+        <entry name="vsys1">
+          <rules>
+            <security>
+              <rules>
+                <entry name="Allow-Web-DMZ">
+                  <to><member>DMZ-Zone</member></to>
+                  <from><member>Untrust-Zone</member></from>
+                  <source><member>any</member></source>
+                  <destination><member>10.0.10.80</member></destination>
+                  <service><member>service-http</member><member>service-https</member></service>
+                  <action>allow</action>
+                  <log-end>yes</log-end>
+                </entry>
+                <entry name="DANGEROUS-Unrestricted-SSH">
+                  <to><member>Management-Zone</member></to>
+                  <from><member>Untrust-Zone</member></from>
+                  <source><member>any</member></source>
+                  <destination><member>192.168.1.5</member></destination>
+                  <service><member>service-ssh</member></service>
+                  <action>allow</action>
+                  <log-end>no</log-end>
+                </entry>
+                <entry name="DANGEROUS-Excessive-Any-Allow">
+                  <to><member>any</member></to>
+                  <from><member>any</member></from>
+                  <source><member>any</member></source>
+                  <destination><member>any</member></destination>
+                  <service><member>any</member></service>
+                  <action>allow</action>
+                  <log-end>no</log-end>
+                </entry>
+              </rules>
+            </security>
+          </rules>
+        </entry>
+      </vsys>
+    </entry>
+  </devices>
+</config>
