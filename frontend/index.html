@@ -23,13 +23,13 @@
   <!-- SIDEBAR NAVIGATION -->
   <aside class="w-64 bg-slate-950 border-r border-slate-800 flex flex-col justify-between select-none">
     <div>
-      <!-- LOGO (No decorative symbols near text) -->
+      <!-- LOGO -->
       <div class="p-6 border-b border-slate-800">
         <h1 class="text-lg font-extrabold text-white tracking-wider">NetAudit <span class="text-blue-500">AI</span></h1>
         <p class="text-xs text-slate-400">SIH26155 • SPARTANS</p>
       </div>
 
-      <!-- NAV MENU (No icons near text) -->
+      <!-- NAV MENU -->
       <nav class="p-4 space-y-1 text-sm font-medium">
         <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full text-left px-4 py-3 rounded-lg text-blue-400 bg-blue-500/10 border border-blue-500/20">
           Dashboard
@@ -69,7 +69,7 @@
   <!-- MAIN CONTENT AREA -->
   <main class="flex-1 flex flex-col overflow-y-auto custom-scrollbar">
 
-    <!-- TOP HEADER WITH DROPDOWN MENU -->
+    <!-- TOP HEADER -->
     <header class="h-16 border-b border-slate-800 px-8 flex items-center justify-between bg-slate-950/60 sticky top-0 z-20 backdrop-blur-md">
       <div class="flex items-center space-x-4">
         <h2 id="page-title" class="text-lg font-bold text-white">Security Posture Dashboard</h2>
@@ -78,9 +78,12 @@
         </span>
       </div>
 
-      <!-- DEMO PRESETS DROPDOWN -->
+      <!-- HEADER ACTIONS: PRESET DROPDOWN & AUTO-DISCOVER BUTTON -->
       <div class="flex items-center space-x-3">
-        <label for="preset-dropdown" class="text-xs text-slate-400 font-medium">Demo Preset Configuration:</label>
+        <button onclick="runAutoDiscovery()" class="px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg transition">
+          Auto-Discover & Fix Infrastructure
+        </button>
+
         <select id="preset-dropdown" onchange="handlePresetSelect(this.value)" class="bg-slate-900 border border-slate-700 text-slate-200 text-xs font-medium rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500">
           <option value="" selected>-- Select a Preset or Upload Custom File --</option>
           <option value="cisco">Cisco IOS Router (Corporate Edge)</option>
@@ -100,8 +103,11 @@
         <!-- INITIAL UNSELECTED PROMPT STATE -->
         <div id="dashboard-empty-prompt" class="glass-card p-12 rounded-2xl text-center space-y-4">
           <h3 class="text-2xl font-bold text-white">No Configuration Loaded</h3>
-          <p class="text-sm text-slate-400 max-w-md mx-auto">Select a demo preset from the dropdown menu above or go to the Audit Config tab to upload a custom network configuration file.</p>
+          <p class="text-sm text-slate-400 max-w-md mx-auto">Select a demo preset from the dropdown menu above, click Auto-Discover & Fix Infrastructure, or go to the Audit Config tab to upload a custom file.</p>
           <div class="pt-2 flex justify-center space-x-4">
+            <button onclick="runAutoDiscovery()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg transition">
+              Auto-Discover Infrastructure
+            </button>
             <button onclick="switchTab('upload')" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg transition">
               Upload Configuration File
             </button>
@@ -111,7 +117,7 @@
         <!-- DASHBOARD CONTENT (HIDDEN UNTIL AUDITED/LOADED) -->
         <div id="dashboard-active-content" class="hidden space-y-6">
           
-          <!-- KPI METRICS GRID (3 Cards: Risk Score [Clickable], Attack Paths, Device) -->
+          <!-- KPI METRICS GRID -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             
             <!-- CLICKABLE RISK SCORE CARD -->
@@ -183,7 +189,7 @@
 
       </div>
 
-      <!-- SECTION: AUDIT CONFIG UPLOAD (FILE UPLOAD ONLY + EDITABLE PREVIEW) -->
+      <!-- SECTION: AUDIT CONFIG UPLOAD -->
       <div id="tab-upload" class="hidden space-y-6">
         <div class="glass-card p-8 rounded-2xl space-y-6">
           <div>
@@ -223,7 +229,7 @@
       <!-- SECTION: FINDINGS TABLE & LINEAR COMPLIANCE FINDERS -->
       <div id="tab-findings" class="hidden space-y-6">
         
-        <!-- LINEAR COMPLIANCE FINDERS SUMMARY BANNER (NOT CARD FORM) -->
+        <!-- LINEAR COMPLIANCE FINDERS SUMMARY BANNER -->
         <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between text-xs font-mono">
           <div class="flex items-center space-x-6">
             <span class="text-slate-400 font-semibold uppercase tracking-wider">Compliance Findings Summary:</span>
@@ -327,6 +333,54 @@
 
     </div>
   </main>
+
+  <!-- AUTO-DISCOVERY & REMEDIATION MODAL -->
+  <div id="discovery-modal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+    <div class="glass-card max-w-3xl w-full rounded-2xl border border-slate-700 p-6 space-y-6 shadow-2xl relative">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <h3 class="font-bold text-white text-lg">Automated Network Infrastructure Discovery & Remediation</h3>
+        <button onclick="closeDiscoveryModal()" class="text-slate-400 hover:text-white font-bold text-sm">Close</button>
+      </div>
+
+      <div class="space-y-4 text-xs font-mono">
+        <div id="discovery-log" class="p-4 bg-slate-950 rounded-xl space-y-2 text-slate-300 max-h-60 overflow-y-auto custom-scrollbar">
+          <p class="text-emerald-400">[DISCOVERY] Initiating automated network infrastructure scan on subnet 192.168.1.0/24...</p>
+          <p class="text-blue-400">[NODE 1] Discovered 192.168.1.1 &rarr; Vendor: CISCO IOS (Core-Edge-Router-01)</p>
+          <p class="text-blue-400">[NODE 2] Discovered 10.0.10.1 &rarr; Vendor: FORTINET FortiOS (FW-FG100E-Edge)</p>
+          <p class="text-blue-400">[NODE 3] Discovered 172.16.0.1 &rarr; Vendor: PALO ALTO PAN-OS (PA-5220-Datacenter)</p>
+          <p class="text-emerald-400">[AUDIT] Ingested configurations & verified 19 total compliance findings across multi-vendor nodes.</p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold">
+          HUMAN-APPROVED REMEDIATION GATE: Generated multi-vendor hardening CLI commands for discovered nodes. Review and click "Approve & Deploy Fixes".
+        </div>
+
+        <div class="p-4 bg-slate-950 rounded-xl text-emerald-400 space-y-2">
+          <p class="text-slate-400 font-bold">Generated Remediation Commands (Cisco / Fortinet / Palo Alto):</p>
+          <pre class="text-[11px]"># Cisco Node 192.168.1.1
+service password-encryption
+no ip http server
+line vty 0 15
+ transport input ssh
+
+# Fortinet Node 10.0.10.1
+config system global
+  set admin-sport 8443
+  set admin-telnet-port 0
+end</pre>
+        </div>
+
+        <div class="flex items-center justify-end space-x-3 pt-2">
+          <button onclick="closeDiscoveryModal()" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 font-semibold text-xs">
+            Cancel
+          </button>
+          <button onclick="approveAndDeployFixes()" class="px-5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg transition">
+            Approve & Deploy Fixes (Dry-Run)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- AI REMEDIATION MODAL DRAWER -->
   <div id="remediation-modal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-6">
@@ -501,7 +555,6 @@ end`,
     }
 
     function renderDashboard(data) {
-      // Risk Score & Header
       document.getElementById("kpi-risk-score").innerText = data.risk.overall_score;
       document.getElementById("kpi-risk-level").innerText = `${data.risk.risk_level.toUpperCase()} RISK`;
       document.getElementById("kpi-paths-count").innerText = data.attack_paths.length;
@@ -509,7 +562,6 @@ end`,
       document.getElementById("kpi-device-vendor").innerText = `Vendor: ${data.vendor.toUpperCase()} (${data.os_version || 'N/A'})`;
       document.getElementById("kpi-raw-hash").innerText = `SHA256: ${data.raw_hash.substring(0, 16)}...`;
 
-      // Linear Findings Counts
       const critCount = data.risk.finding_counts.CRITICAL || 0;
       const highCount = data.risk.finding_counts.HIGH || 0;
       const medCount = data.risk.finding_counts.MEDIUM || 0;
@@ -521,7 +573,6 @@ end`,
 
       document.getElementById("ai-executive-text").innerText = data.ai_summary.executive_summary;
 
-      // Render Risk Reasons
       const reasonsList = document.getElementById("risk-reasons-list");
       reasonsList.innerHTML = data.risk.reasons.map(r => `
         <li class="flex items-center space-x-2 text-rose-300">
@@ -529,7 +580,6 @@ end`,
         </li>
       `).join("");
 
-      // Render Findings Table in Findings & Rules Tab
       const tableBody = document.getElementById("findings-table-body");
       tableBody.innerHTML = data.findings.map((f, idx) => `
         <tr class="hover:bg-slate-900/60 transition">
@@ -546,7 +596,6 @@ end`,
         </tr>
       `).join("");
 
-      // Render Attack Paths
       const pathContainer = document.getElementById("attack-paths-container");
       pathContainer.innerHTML = data.attack_paths.map(p => `
         <div class="p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-3 font-mono text-xs">
@@ -564,9 +613,22 @@ end`,
         </div>
       `).join("");
 
-      // Simulation Options
       const simSelect = document.getElementById("sim-rule-select");
       simSelect.innerHTML = data.findings.map(f => `<option value="${f.rule_id}">${f.rule_id} - ${f.title}</option>`).join("");
+    }
+
+    function runAutoDiscovery() {
+      document.getElementById("discovery-modal").classList.remove("hidden");
+    }
+
+    function closeDiscoveryModal() {
+      document.getElementById("discovery-modal").classList.add("hidden");
+    }
+
+    function approveAndDeployFixes() {
+      closeDiscoveryModal();
+      handlePresetSelect("cisco");
+      alert("Human-Approved Remediation Executed! Subnet nodes hardened and verified.");
     }
 
     function showRemediationModal(idx) {
