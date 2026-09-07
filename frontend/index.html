@@ -4,9 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NetAudit AI - Vendor-Neutral Network Security Posture Management</title>
-  <!-- Tailwind CSS & FontAwesome -->
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <!-- Google Fonts: Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 
@@ -14,8 +13,6 @@
     body { font-family: 'Inter', sans-serif; background-color: #0b0f19; color: #e2e8f0; }
     .glass-card { background: rgba(17, 24, 39, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
     .glass-card-hover:hover { border-color: rgba(59, 130, 246, 0.4); transform: translateY(-2px); transition: all 0.2s ease; }
-    .glow-blue { box-shadow: 0 0 25px rgba(37, 99, 235, 0.25); }
-    .glow-red { box-shadow: 0 0 25px rgba(225, 29, 72, 0.3); }
     .custom-scrollbar::-webkit-scrollbar { width: 6px; }
     .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
@@ -26,56 +23,45 @@
   <!-- SIDEBAR NAVIGATION -->
   <aside class="w-64 bg-slate-950 border-r border-slate-800 flex flex-col justify-between select-none">
     <div>
-      <!-- LOGO -->
-      <div class="p-6 border-b border-slate-800 flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white font-bold text-xl shadow-lg glow-blue">
-          <i class="fa-solid font-bold fa-shield-halved"></i>
-        </div>
-        <div>
-          <h1 class="text-lg font-bold text-white tracking-wider">NetAudit <span class="text-blue-500">AI</span></h1>
-          <p class="text-xs text-slate-400">SIH26155 • SPARTANS</p>
-        </div>
+      <!-- LOGO (No decorative symbols near text) -->
+      <div class="p-6 border-b border-slate-800">
+        <h1 class="text-lg font-extrabold text-white tracking-wider">NetAudit <span class="text-blue-500">AI</span></h1>
+        <p class="text-xs text-slate-400">SIH26155 • SPARTANS</p>
       </div>
 
-      <!-- NAV MENU -->
+      <!-- NAV MENU (No icons near text) -->
       <nav class="p-4 space-y-1 text-sm font-medium">
-        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-blue-400 bg-blue-500/10 border border-blue-500/20">
-          <i class="fa-solid fa-chart-pie w-5"></i>
-          <span>Dashboard</span>
+        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full text-left px-4 py-3 rounded-lg text-blue-400 bg-blue-500/10 border border-blue-500/20">
+          Dashboard
         </button>
-        <button onclick="switchTab('upload')" id="nav-upload" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900">
-          <i class="fa-solid fa-file-arrow-up w-5"></i>
-          <span>Audit Config</span>
+        <button onclick="switchTab('upload')" id="nav-upload" class="w-full text-left px-4 py-3 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+          Audit Config
         </button>
-        <button onclick="switchTab('findings')" id="nav-findings" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900">
-          <i class="fa-solid fa-triangle-exclamation w-5"></i>
-          <span>Findings & Rules</span>
+        <button onclick="switchTab('findings')" id="nav-findings" class="w-full text-left px-4 py-3 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+          Findings & Rules
         </button>
-        <button onclick="switchTab('attack-paths')" id="nav-attack-paths" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900">
-          <i class="fa-solid fa-route w-5"></i>
-          <span>Attack Paths</span>
+        <button onclick="switchTab('attack-paths')" id="nav-attack-paths" class="w-full text-left px-4 py-3 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+          Attack Paths
         </button>
-        <button onclick="switchTab('drift')" id="nav-drift" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900">
-          <i class="fa-solid fa-code-compare w-5"></i>
-          <span>Drift Analysis</span>
+        <button onclick="switchTab('drift')" id="nav-drift" class="w-full text-left px-4 py-3 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+          Drift Analysis
         </button>
-        <button onclick="switchTab('simulation')" id="nav-simulation" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900">
-          <i class="fa-solid fa-flask w-5"></i>
-          <span>What-If Simulator</span>
+        <button onclick="switchTab('simulation')" id="nav-simulation" class="w-full text-left px-4 py-3 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+          What-If Simulator
         </button>
       </nav>
     </div>
 
-    <!-- VENDOR CAPABILITY BADGE -->
+    <!-- VENDOR SUPPORT BADGE -->
     <div class="p-4 m-4 rounded-xl bg-slate-900/80 border border-slate-800 text-xs text-slate-400">
       <div class="font-semibold text-slate-200 mb-2 flex items-center justify-between">
         <span>Supported Vendors</span>
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
       </div>
       <div class="flex items-center justify-between text-slate-300 font-mono text-[11px]">
-        <span>• Cisco IOS</span>
-        <span>• Fortinet</span>
-        <span>• Palo Alto</span>
+        <span>Cisco IOS</span>
+        <span>Fortinet</span>
+        <span>Palo Alto</span>
       </div>
     </div>
   </aside>
@@ -83,7 +69,7 @@
   <!-- MAIN CONTENT AREA -->
   <main class="flex-1 flex flex-col overflow-y-auto custom-scrollbar">
 
-    <!-- TOP HEADER -->
+    <!-- TOP HEADER WITH DROPDOWN MENU -->
     <header class="h-16 border-b border-slate-800 px-8 flex items-center justify-between bg-slate-950/60 sticky top-0 z-20 backdrop-blur-md">
       <div class="flex items-center space-x-4">
         <h2 id="page-title" class="text-lg font-bold text-white">Security Posture Dashboard</h2>
@@ -92,18 +78,16 @@
         </span>
       </div>
 
-      <!-- ACTION PRESETS -->
+      <!-- DEMO PRESETS DROPDOWN -->
       <div class="flex items-center space-x-3">
-        <span class="text-xs text-slate-400 font-medium">Demo Presets:</span>
-        <button onclick="loadPreset('cisco')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 font-medium transition">
-          <i class="fa-solid fa-router text-blue-400 mr-1.5"></i>Cisco Router
-        </button>
-        <button onclick="loadPreset('fortinet')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 font-medium transition">
-          <i class="fa-solid fa-shield-cat text-red-400 mr-1.5"></i>Fortinet
-        </button>
-        <button onclick="loadPreset('paloalto')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 font-medium transition">
-          <i class="fa-solid fa-fire text-amber-400 mr-1.5"></i>Palo Alto
-        </button>
+        <label for="preset-dropdown" class="text-xs text-slate-400 font-medium">Demo Preset Configuration:</label>
+        <select id="preset-dropdown" onchange="handlePresetSelect(this.value)" class="bg-slate-900 border border-slate-700 text-slate-200 text-xs font-medium rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500">
+          <option value="" selected>-- Select a Preset or Upload Custom File --</option>
+          <option value="cisco">Cisco IOS Router (Corporate Edge)</option>
+          <option value="fortinet">Fortinet FortiGate (Edge Firewall)</option>
+          <option value="paloalto">Palo Alto PAN-OS (Datacenter FW)</option>
+          <option value="custom">Custom Uploaded File</option>
+        </select>
       </div>
     </header>
 
@@ -113,128 +97,145 @@
       <!-- SECTION: DASHBOARD OVERVIEW -->
       <div id="tab-dashboard" class="space-y-6">
         
-        <!-- KPI METRICS GRID -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <!-- INITIAL UNSELECTED PROMPT STATE -->
+        <div id="dashboard-empty-prompt" class="glass-card p-12 rounded-2xl text-center space-y-4">
+          <h3 class="text-2xl font-bold text-white">No Configuration Loaded</h3>
+          <p class="text-sm text-slate-400 max-w-md mx-auto">Select a demo preset from the dropdown menu above or go to the Audit Config tab to upload a custom network configuration file.</p>
+          <div class="pt-2 flex justify-center space-x-4">
+            <button onclick="switchTab('upload')" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg transition">
+              Upload Configuration File
+            </button>
+          </div>
+        </div>
+
+        <!-- DASHBOARD CONTENT (HIDDEN UNTIL AUDITED/LOADED) -->
+        <div id="dashboard-active-content" class="hidden space-y-6">
           
-          <!-- RISK SCORE CARD -->
-          <div class="glass-card p-6 rounded-2xl relative overflow-hidden flex flex-col justify-between">
-            <div class="flex items-center justify-between text-slate-400 text-sm font-medium">
-              <span>Overall Risk Score</span>
-              <i class="fa-solid fa-gauge-high text-rose-500"></i>
+          <!-- KPI METRICS GRID (3 Cards: Risk Score [Clickable], Attack Paths, Device) -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- CLICKABLE RISK SCORE CARD -->
+            <div onclick="switchTab('findings')" class="glass-card p-6 rounded-2xl cursor-pointer hover:border-blue-500/50 transition relative overflow-hidden flex flex-col justify-between group">
+              <div class="flex items-center justify-between text-slate-400 text-sm font-medium">
+                <span>Overall Risk Score</span>
+                <span class="text-xs text-blue-400 group-hover:underline">View Findings &rarr;</span>
+              </div>
+              <div class="my-4 flex items-baseline space-x-3">
+                <span id="kpi-risk-score" class="text-5xl font-extrabold text-rose-500">100.0</span>
+                <span class="text-sm font-semibold text-slate-400">/ 100</span>
+              </div>
+              <div class="flex items-center justify-between text-xs">
+                <span id="kpi-risk-level" class="px-2.5 py-0.5 rounded-full font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">
+                  CRITICAL RISK
+                </span>
+                <span class="text-slate-400">Click to Inspect Violations</span>
+              </div>
             </div>
-            <div class="my-4 flex items-baseline space-x-3">
-              <span id="kpi-risk-score" class="text-5xl font-extrabold text-rose-500">100.0</span>
-              <span class="text-sm font-semibold text-slate-400">/ 100</span>
+
+            <!-- ATTACK PATHS CARD -->
+            <div class="glass-card p-6 rounded-2xl flex flex-col justify-between">
+              <div class="flex items-center justify-between text-slate-400 text-sm font-medium">
+                <span>Attack Exposure Paths</span>
+              </div>
+              <div class="my-4 flex items-baseline space-x-3">
+                <span id="kpi-paths-count" class="text-5xl font-extrabold text-indigo-400">1</span>
+                <span class="text-sm font-semibold text-slate-400">Vector</span>
+              </div>
+              <p class="text-xs text-slate-400">Internet &rarr; WAN &rarr; SSH &rarr; Asset</p>
             </div>
-            <div class="flex items-center justify-between text-xs">
-              <span id="kpi-risk-level" class="px-2.5 py-0.5 rounded-full font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">
-                CRITICAL RISK
-              </span>
-              <span class="text-slate-400">Explainable Math Engine</span>
+
+            <!-- DEVICE DETAILS CARD -->
+            <div class="glass-card p-6 rounded-2xl flex flex-col justify-between">
+              <div class="flex items-center justify-between text-slate-400 text-sm font-medium">
+                <span>Audited Device</span>
+              </div>
+              <div class="my-3">
+                <h3 id="kpi-device-name" class="text-xl font-bold text-white truncate">Core-Edge-Router-01</h3>
+                <p id="kpi-device-vendor" class="text-xs font-mono text-blue-400 mt-1">Vendor: CISCO IOS (v15.6)</p>
+              </div>
+              <div class="text-[11px] text-slate-500 font-mono truncate" id="kpi-raw-hash">
+                SHA256: 0809d0a8704d...
+              </div>
             </div>
+
           </div>
 
-          <!-- TOTAL FINDINGS CARD -->
-          <div class="glass-card p-6 rounded-2xl flex flex-col justify-between">
-            <div class="flex items-center justify-between text-slate-400 text-sm font-medium">
-              <span>Compliance Findings</span>
-              <i class="fa-solid fa-triangle-exclamation text-amber-500"></i>
-            </div>
-            <div class="my-4 flex items-baseline space-x-3">
-              <span id="kpi-findings-count" class="text-5xl font-extrabold text-amber-400">11</span>
-              <span class="text-sm font-semibold text-slate-400">Violations</span>
-            </div>
-            <div class="flex items-center space-x-2 text-xs">
-              <span id="kpi-crit-count" class="text-rose-400 font-bold">2 Critical</span>
-              <span class="text-slate-600">•</span>
-              <span id="kpi-high-count" class="text-amber-400 font-bold">5 High</span>
-              <span class="text-slate-600">•</span>
-              <span id="kpi-med-count" class="text-blue-400 font-bold">4 Medium</span>
-            </div>
-          </div>
-
-          <!-- ATTACK PATHS CARD -->
-          <div class="glass-card p-6 rounded-2xl flex flex-col justify-between">
-            <div class="flex items-center justify-between text-slate-400 text-sm font-medium">
-              <span>Attack Exposure Paths</span>
-              <i class="fa-solid fa-route text-indigo-400"></i>
-            </div>
-            <div class="my-4 flex items-baseline space-x-3">
-              <span id="kpi-paths-count" class="text-5xl font-extrabold text-indigo-400">1</span>
-              <span class="text-sm font-semibold text-slate-400">Vector</span>
-            </div>
-            <p class="text-xs text-slate-400">Internet → WAN → SSH → Asset</p>
-          </div>
-
-          <!-- DEVICE DETAILS CARD -->
-          <div class="glass-card p-6 rounded-2xl flex flex-col justify-between">
-            <div class="flex items-center justify-between text-slate-400 text-sm font-medium">
-              <span>Audited Device</span>
-              <i class="fa-solid fa-server text-blue-400"></i>
-            </div>
-            <div class="my-3">
-              <h3 id="kpi-device-name" class="text-xl font-bold text-white truncate">Core-Edge-Router-01</h3>
-              <p id="kpi-device-vendor" class="text-xs font-mono text-blue-400 mt-1">Vendor: CISCO IOS (v15.6)</p>
-            </div>
-            <div class="text-[11px] text-slate-500 font-mono truncate" id="kpi-raw-hash">
-              SHA256: 0809d0a8704d...
-            </div>
-          </div>
-
-        </div>
-
-        <!-- AI EXECUTIVE SUMMARY BOX -->
-        <div class="glass-card p-6 rounded-2xl border-l-4 border-l-blue-500">
-          <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center space-x-2">
-              <i class="fa-solid fa-robot text-blue-400 text-lg"></i>
+          <!-- AI EXECUTIVE SUMMARY BOX -->
+          <div class="glass-card p-6 rounded-2xl border-l-4 border-l-blue-500">
+            <div class="flex items-center justify-between mb-3">
               <h3 class="font-bold text-white text-base">AI Security Analyst Summary</h3>
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-blue-500/20 text-blue-300">Sanitized Evidence Bounded</span>
             </div>
-            <span class="text-xs font-mono px-2 py-0.5 rounded bg-blue-500/20 text-blue-300">Sanitized Evidence Bounded</span>
+            <p id="ai-executive-text" class="text-sm text-slate-300 leading-relaxed">
+              Audit completed. Select a configuration or preset to generate risk findings and AI executive analysis.
+            </p>
           </div>
-          <p id="ai-executive-text" class="text-sm text-slate-300 leading-relaxed">
-            Audit completed for device 'Core-Edge-Router-01' (CISCO). Identified 11 total deterministic security compliance findings (2 Critical, 5 High). Primary risk drivers are unlogged/broad access control policies and unencrypted/cleartext management services.
-          </p>
-        </div>
 
-        <!-- TOP REASONS BREAKDOWN -->
-        <div class="glass-card p-6 rounded-2xl space-y-4">
-          <h3 class="font-bold text-white text-base flex items-center space-x-2">
-            <i class="fa-solid fa-calculator text-rose-400"></i>
-            <span>Top Explainable Risk Score Drivers</span>
-          </h3>
-          <ul id="risk-reasons-list" class="space-y-2.5 text-xs text-slate-300 font-mono">
-            <!-- Populated dynamically -->
-          </ul>
+          <!-- TOP REASONS BREAKDOWN -->
+          <div class="glass-card p-6 rounded-2xl space-y-4">
+            <h3 class="font-bold text-white text-base">Top Explainable Risk Score Drivers</h3>
+            <ul id="risk-reasons-list" class="space-y-2.5 text-xs text-slate-300 font-mono">
+              <!-- Populated dynamically -->
+            </ul>
+          </div>
+
         </div>
 
       </div>
 
-      <!-- SECTION: AUDIT CONFIG UPLOAD -->
+      <!-- SECTION: AUDIT CONFIG UPLOAD (FILE UPLOAD ONLY + EDITABLE PREVIEW) -->
       <div id="tab-upload" class="hidden space-y-6">
         <div class="glass-card p-8 rounded-2xl space-y-6">
           <div>
-            <h3 class="text-xl font-bold text-white">Upload / Paste Network Configuration</h3>
-            <p class="text-sm text-slate-400">Supports raw configuration syntax from Cisco IOS, Fortinet FortiOS, and Palo Alto PAN-OS.</p>
+            <h3 class="text-xl font-bold text-white">Upload Network Configuration File</h3>
+            <p class="text-sm text-slate-400">Select a device configuration file (.cfg, .txt, .xml, .conf). You can preview and edit the file directly before executing the audit.</p>
           </div>
 
-          <div class="space-y-4">
-            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Raw Configuration Content</label>
-            <textarea id="config-text-input" rows="14" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-xs font-mono text-slate-200 focus:outline-none focus:border-blue-500 custom-scrollbar" placeholder="Paste Cisco, Fortinet, or Palo Alto config here..."></textarea>
+          <!-- FILE UPLOAD INPUT BUTTON ONLY -->
+          <div class="p-6 border-2 border-dashed border-slate-800 hover:border-blue-500/50 rounded-xl bg-slate-950/60 text-center space-y-3 transition">
+            <input type="file" id="file-upload-input" onchange="handleFileUpload(event)" accept=".cfg,.txt,.xml,.conf" class="hidden" />
+            <div>
+              <button onclick="document.getElementById('file-upload-input').click()" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs transition">
+                Select Configuration File
+              </button>
+            </div>
+            <p id="file-upload-name" class="text-xs text-slate-400 font-mono">No file selected</p>
           </div>
 
-          <div class="flex items-center justify-between pt-4">
-            <button onclick="runLiveAudit()" class="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-lg glow-blue transition flex items-center space-x-2">
-              <i class="fa-solid fa-magnifying-glass-shield"></i>
-              <span>Execute Compliance Audit</span>
+          <!-- EDITABLE PREVIEW AREA -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-xs font-semibold text-slate-300">
+              <span>Configuration Content Preview (Editable)</span>
+              <span id="preview-line-count" class="text-slate-500 font-mono">0 lines</span>
+            </div>
+            <textarea id="config-text-input" rows="14" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-xs font-mono text-slate-200 focus:outline-none focus:border-blue-500 custom-scrollbar" placeholder="Uploaded or selected configuration text will appear here for preview and editing..."></textarea>
+          </div>
+
+          <div class="flex items-center justify-between pt-2">
+            <button onclick="runLiveAudit()" class="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-lg transition">
+              Execute Compliance Audit
             </button>
             <span id="audit-spinner" class="hidden text-xs text-blue-400 font-mono animate-pulse">Running Parsing & Compliance Engine...</span>
           </div>
         </div>
       </div>
 
-      <!-- SECTION: FINDINGS TABLE -->
+      <!-- SECTION: FINDINGS TABLE & LINEAR COMPLIANCE FINDERS -->
       <div id="tab-findings" class="hidden space-y-6">
+        
+        <!-- LINEAR COMPLIANCE FINDERS SUMMARY BANNER (NOT CARD FORM) -->
+        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between text-xs font-mono">
+          <div class="flex items-center space-x-6">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider">Compliance Findings Summary:</span>
+            <span id="linear-findings-count" class="text-amber-400 font-bold text-sm">11 Total Violations</span>
+          </div>
+          <div class="flex items-center space-x-4">
+            <span id="linear-crit-count" class="px-2.5 py-1 rounded bg-rose-500/20 text-rose-300 font-bold">2 Critical</span>
+            <span id="linear-high-count" class="px-2.5 py-1 rounded bg-amber-500/20 text-amber-300 font-bold">5 High</span>
+            <span id="linear-med-count" class="px-2.5 py-1 rounded bg-blue-500/20 text-blue-300 font-bold">4 Medium</span>
+          </div>
+        </div>
+
         <div class="glass-card rounded-2xl overflow-hidden">
           <div class="p-6 border-b border-slate-800 flex items-center justify-between">
             <h3 class="font-bold text-white text-lg">Verified Compliance Findings</h3>
@@ -284,7 +285,7 @@
           </div>
 
           <button onclick="runDriftDemo()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg transition">
-            <i class="fa-solid fa-bolt mr-2"></i>Run V1 vs V2 Drift Comparison
+            Run V1 vs V2 Drift Comparison
           </button>
 
           <div id="drift-result-box" class="p-6 rounded-xl bg-slate-950 border border-slate-800 space-y-4 text-xs font-mono">
@@ -315,7 +316,7 @@
           </div>
 
           <button onclick="runSimulationDemo()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg transition">
-            <i class="fa-solid fa-flask mr-2"></i>Execute Dry-Run Simulation
+            Execute Dry-Run Simulation
           </button>
 
           <div id="simulation-result-box" class="p-6 rounded-xl bg-slate-950 border border-slate-800 space-y-4 text-xs font-mono">
@@ -331,16 +332,12 @@
   <div id="remediation-modal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-6">
     <div class="glass-card max-w-2xl w-full rounded-2xl border border-slate-700 p-6 space-y-6 shadow-2xl relative">
       <div class="flex items-center justify-between border-b border-slate-800 pb-4">
-        <h3 id="modal-rule-title" class="font-bold text-white text-lg flex items-center space-x-2">
-          <i class="fa-solid fa-screwdriver-wrench text-blue-400"></i>
-          <span>AI Remediation Guidance</span>
-        </h3>
-        <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+        <h3 id="modal-rule-title" class="font-bold text-white text-lg">AI Remediation Guidance</h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-white font-bold text-sm">Close</button>
       </div>
 
       <!-- WARNING BANNER -->
-      <div class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold flex items-center space-x-3">
-        <i class="fa-solid fa-triangle-exclamation text-base"></i>
+      <div class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold">
         <span id="modal-warning">REVIEW BEFORE DEPLOYMENT - DO NOT AUTOMATICALLY EXECUTE ON PRODUCTION DEVICES</span>
       </div>
 
@@ -358,12 +355,11 @@
     </div>
   </div>
 
-  <!-- EMBEDDED DASHBOARD SCRIPT -->
+  <!-- DASHBOARD JAVASCRIPT LOGIC -->
   <script>
     const API_URL = "http://localhost:8000/api";
     let currentAuditData = null;
 
-    // PRESET CONFIG DATASETS FOR FAST OFFLINE DEMO
     const PRESETS = {
       cisco: `version 15.6
 hostname Core-Edge-Router-01
@@ -427,21 +423,52 @@ end`,
       document.getElementById(`tab-${tabId}`).classList.remove("hidden");
 
       document.querySelectorAll("nav button").forEach(btn => {
-        btn.className = "w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900";
+        btn.className = "w-full text-left px-4 py-3 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900";
       });
       const activeNav = document.getElementById(`nav-${tabId}`);
-      if (activeNav) activeNav.className = "w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-blue-400 bg-blue-500/10 border border-blue-500/20";
+      if (activeNav) activeNav.className = "w-full text-left px-4 py-3 rounded-lg text-blue-400 bg-blue-500/10 border border-blue-500/20";
     }
 
-    async function loadPreset(vendorKey) {
-      const text = PRESETS[vendorKey];
+    function handlePresetSelect(val) {
+      if (!val) {
+        document.getElementById("config-text-input").value = "";
+        document.getElementById("file-upload-name").innerText = "No file selected";
+        document.getElementById("dashboard-empty-prompt").classList.remove("hidden");
+        document.getElementById("dashboard-active-content").classList.add("hidden");
+        return;
+      }
+
+      if (val === "custom") {
+        switchTab("upload");
+        document.getElementById("file-upload-input").click();
+        return;
+      }
+
+      const text = PRESETS[val];
       document.getElementById("config-text-input").value = text;
-      await runAuditWithText(text);
+      document.getElementById("preview-line-count").innerText = `${text.split('\n').length} lines`;
+      runAuditWithText(text);
+    }
+
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      document.getElementById("file-upload-name").innerText = `Selected: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+      document.getElementById("preset-dropdown").value = "custom";
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const text = e.target.result;
+        document.getElementById("config-text-input").value = text;
+        document.getElementById("preview-line-count").innerText = `${text.split('\n').length} lines`;
+      };
+      reader.readAsText(file);
     }
 
     async function runLiveAudit() {
       const text = document.getElementById("config-text-input").value;
-      if (!text.strip()) return alert("Please enter configuration text.");
+      if (!text || !text.trim()) return alert("Please upload a file or select a preset configuration first.");
       await runAuditWithText(text);
     }
 
@@ -459,36 +486,50 @@ end`,
 
         if (!res.ok) throw new Error("API call failed");
         currentAuditData = await res.json();
+
+        // Reveal active content in Dashboard
+        document.getElementById("dashboard-empty-prompt").classList.add("hidden");
+        document.getElementById("dashboard-active-content").classList.remove("hidden");
+
         renderDashboard(currentAuditData);
         switchTab("dashboard");
       } catch (err) {
-        console.error("API error, falling back to local client processing...", err);
+        console.error("API call error:", err);
       } finally {
         document.getElementById("audit-spinner")?.classList.add("hidden");
       }
     }
 
     function renderDashboard(data) {
+      // Risk Score & Header
       document.getElementById("kpi-risk-score").innerText = data.risk.overall_score;
       document.getElementById("kpi-risk-level").innerText = `${data.risk.risk_level.toUpperCase()} RISK`;
-      document.getElementById("kpi-findings-count").innerText = data.findings_count;
       document.getElementById("kpi-paths-count").innerText = data.attack_paths.length;
       document.getElementById("kpi-device-name").innerText = data.device_name;
       document.getElementById("kpi-device-vendor").innerText = `Vendor: ${data.vendor.toUpperCase()} (${data.os_version || 'N/A'})`;
       document.getElementById("kpi-raw-hash").innerText = `SHA256: ${data.raw_hash.substring(0, 16)}...`;
 
+      // Linear Findings Counts
+      const critCount = data.risk.finding_counts.CRITICAL || 0;
+      const highCount = data.risk.finding_counts.HIGH || 0;
+      const medCount = data.risk.finding_counts.MEDIUM || 0;
+
+      document.getElementById("linear-findings-count").innerText = `${data.findings_count} Total Violations`;
+      document.getElementById("linear-crit-count").innerText = `${critCount} Critical`;
+      document.getElementById("linear-high-count").innerText = `${highCount} High`;
+      document.getElementById("linear-med-count").innerText = `${medCount} Medium`;
+
       document.getElementById("ai-executive-text").innerText = data.ai_summary.executive_summary;
 
-      // Render Top Reasons List
+      // Render Risk Reasons
       const reasonsList = document.getElementById("risk-reasons-list");
       reasonsList.innerHTML = data.risk.reasons.map(r => `
         <li class="flex items-center space-x-2 text-rose-300">
-          <i class="fa-solid fa-circle-exclamation text-rose-500"></i>
-          <span>${r}</span>
+          <span>&bull; ${r}</span>
         </li>
       `).join("");
 
-      // Render Findings Table
+      // Render Findings Table in Findings & Rules Tab
       const tableBody = document.getElementById("findings-table-body");
       tableBody.innerHTML = data.findings.map((f, idx) => `
         <tr class="hover:bg-slate-900/60 transition">
@@ -499,7 +540,7 @@ end`,
           <td class="p-4 text-indigo-400">${f.compliance_mapping.nist_csf || 'N/A'}</td>
           <td class="p-4 text-right">
             <button onclick="showRemediationModal(${idx})" class="px-2.5 py-1 rounded bg-blue-600/20 hover:bg-blue-600/40 text-blue-300 text-[11px] font-sans font-semibold border border-blue-500/30">
-              <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>AI CLI
+              AI CLI
             </button>
           </td>
         </tr>
@@ -516,14 +557,14 @@ end`,
           <div class="flex items-center space-x-2 text-slate-300 overflow-x-auto pb-2">
             ${p.path_steps.map((s, i) => `
               <span class="px-3 py-1.5 rounded bg-slate-900 border border-slate-800 whitespace-nowrap">${s}</span>
-              ${i < p.path_steps.length - 1 ? '<i class="fa-solid fa-arrow-right text-slate-600"></i>' : ''}
+              ${i < p.path_steps.length - 1 ? '<span class="text-slate-600">&rarr;</span>' : ''}
             `).join("")}
           </div>
           <p class="text-[11px] text-slate-500 italic">${p.disclaimer}</p>
         </div>
       `).join("");
 
-      // Render Simulation Rule Selector Options
+      // Simulation Options
       const simSelect = document.getElementById("sim-rule-select");
       simSelect.innerHTML = data.findings.map(f => `<option value="${f.rule_id}">${f.rule_id} - ${f.title}</option>`).join("");
     }
@@ -552,7 +593,6 @@ end`,
       box.innerHTML = `<span class="animate-pulse text-indigo-400">Executing Drift Engine comparison V1 vs V2...</span>`;
 
       try {
-        const v1_res = await fetch("raw_configs/cisco/cisco_router_01.cfg").catch(() => null);
         const res = await fetch(`${API_URL}/drift/compare`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -567,7 +607,7 @@ end`,
             <p class="font-bold text-amber-400 text-sm">${data.summary}</p>
             <p class="text-slate-400">Baseline SHA256: ${data.old_hash.substring(0, 16)}...</p>
             <p class="text-slate-400">Drifted SHA256 : ${data.new_hash.substring(0, 16)}...</p>
-            <p class="text-rose-400">Score Shift: ${data.old_risk_score} (${data.old_risk_level}) → ${data.new_risk_score} (${data.new_risk_level}) [Delta: ${data.risk_score_delta}]</p>
+            <p class="text-rose-400">Score Shift: ${data.old_risk_score} (${data.old_risk_level}) &rarr; ${data.new_risk_score} (${data.new_risk_level}) [Delta: ${data.risk_score_delta}]</p>
           </div>
         `;
       } catch (err) {
@@ -605,11 +645,6 @@ end`,
         box.innerText = "Simulation error: " + err;
       }
     }
-
-    // Initialize Default Cisco Audit on load
-    window.addEventListener("DOMContentLoaded", () => {
-      loadPreset("cisco");
-    });
   </script>
 </body>
 </html>
